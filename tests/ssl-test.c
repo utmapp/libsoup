@@ -74,7 +74,11 @@ do_strictness_test (gconstpointer data)
 
         if (test->expected_status == SOUP_STATUS_OK) {
                 g_assert_cmpuint (soup_message_get_tls_protocol_version (msg), ==, G_TLS_PROTOCOL_VERSION_TLS_1_3);
-                g_assert_cmpstr (soup_message_get_tls_ciphersuite_name (msg), ==, "TLS_AES-256-GCM_SHA384");
+                if (g_strcmp0 (g_type_name (G_TYPE_FROM_INSTANCE (g_tls_backend_get_default ())), "GTlsBackendGnutls") == 0) {
+                        g_assert_cmpstr (soup_message_get_tls_ciphersuite_name (msg), ==, "TLS_AES-256-GCM_SHA384");
+                } else {
+                        g_assert_cmpstr (soup_message_get_tls_ciphersuite_name (msg), ==, "TLS_AES_256_GCM_SHA384");
+                }
         } else {
                 g_assert_cmpuint (soup_message_get_tls_protocol_version (msg), ==, G_TLS_PROTOCOL_VERSION_UNKNOWN);
                 g_assert_null (soup_message_get_tls_ciphersuite_name (msg));
