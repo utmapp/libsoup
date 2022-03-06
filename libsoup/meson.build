@@ -76,7 +76,6 @@ soup_sources = [
   'soup-socket.c',
   'soup-socket-properties.c',
   'soup-status.c',
-  'soup-tld.c',
   'soup-uri.c',
   'soup-value-utils.c',
   'soup-version.c',
@@ -165,7 +164,6 @@ soup_introspection_headers = [
   'soup-session-sync.h',
   'soup-socket.h',
   'soup-status.h',
-  'soup-tld.h',
   'soup-types.h',
   'soup-uri.h',
   'soup-value-utils.h',
@@ -208,6 +206,10 @@ if brotlidec_dep.found()
   soup_headers += 'soup-brotli-decompressor.h'
 endif
 
+if libpsl_dep.found()
+  soup_sources += 'soup-tld.c'
+  soup_headers += 'soup-tld.h'
+endif
 
 includedir = join_paths(libsoup_api_name, meson.project_name())
 install_headers(soup_installed_headers, subdir : includedir)

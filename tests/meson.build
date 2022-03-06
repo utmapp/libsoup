@@ -62,7 +62,6 @@ tests = [
   ['ssl', true, []],
   ['streaming', true, []],
   ['timeout', true, []],
-  ['tld', true, []],
   ['uri-parsing', true, []],
   ['websocket', true, [libz_dep]]
 ]
@@ -80,6 +79,12 @@ if brotlidec_dep.found()
       install_dir : join_paths(installed_tests_execdir, 'brotli-data'),
     )
   endif
+endif
+
+if libpsl_dep.found()
+  tests += [
+    ['tld', true, []],
+  ]
 endif
 
 if have_apache

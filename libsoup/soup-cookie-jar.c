@@ -595,18 +595,24 @@ soup_cookie_jar_add_cookie_full (SoupCookieJar *jar, SoupCookie *cookie, SoupURI
 	g_return_if_fail (SOUP_IS_COOKIE_JAR (jar));
 	g_return_if_fail (cookie != NULL);
 
+#ifdef HAVE_TLD
 	/* Never accept cookies for public domains. */
 	if (!g_hostname_is_ip_address (cookie->domain) &&
 	    soup_tld_domain_is_public_suffix (cookie->domain)) {
 		soup_cookie_free (cookie);
 		return;
 	}
+#endif
 
 	priv = soup_cookie_jar_get_instance_private (jar);
 
         if (first_party != NULL) {
+#ifdef HAVE_TLD
                 if (priv->accept_policy == SOUP_COOKIE_JAR_ACCEPT_NEVER ||
                     incoming_cookie_is_third_party (jar, cookie, first_party, priv->accept_policy)) {
+#else // no TLD, assume every cookie is third-party
+                if (priv->accept_policy != SOUP_COOKIE_JAR_ACCEPT_ALWAYS) {
+#endif
                         soup_cookie_free (cookie);
                         return;
                 }
